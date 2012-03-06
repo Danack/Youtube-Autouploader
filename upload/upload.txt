@@ -1,0 +1,1 @@
+Put video files in this directory to allow the Autouploader to find them.

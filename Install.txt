@@ -1,0 +1,96 @@
+
+
+Install instructions
+====================
+
+
+How to create your Youtube app key
+==================================
+
+
+
+Synology web server
+===================
+
+1) Login to you Synology's web interface and open the control panel.
+
+2) Click 'Web services' and then 'Enable Web Station'.
+
+3) Click virtual host and enter:
+	'phpyoutube' for the sub-folder.
+	'phpyoutube.com' for the hostname.
+This will create a directory in the default volume named as /volume1/web/phpyoutube or similar.
+
+4) Connect to the Synology Diskstation through Finder/Explorer and extract the contents of the PHP Youtube uploader into that directory. 
+
+6) SSH into to your Synology box (ssh root@10.1.2.200).
+
+7) Check that the full path that your web service is running is "/volume1/web/phpyoutube". If it's not you'll need to find which 
+volumn the 'Web station' is running on and use that to setup Cron below. 
+
+To make the URL accessible.
+
+Linux web server + cron
+=======================
+
+
+Cron setup
+==========
+
+1) Edit the file /etc/crontab (vi /etc/crontab) and assuming you copied the files to the directory "/volume1/web/phpyoutube" add
+the following line EXACTLY.
+
+30    1    *    *    *    root   php /volume1/web/phpyoutube/uploader.php cron=true >> /volume1/web/phpyoutube/uploader.log
+
+If the uploader in a different directory please replace both instances of '/volume1/web/phpyoutube' with the appropriate directory name.
+
+2) Restart the cron service to make the changes live "synoservice --restart crond"
+
+
+Final setup steps
+=================
+
+0) Edit the config.php file to use your values for username, password, appname and appKey.
+
+1) If you setup a Synology or Linux web server check that the web server is running correctly by going to http://10.1.2.200/phpyoutube/ 
+You should see a web page showing the Uploader page
+
+2) (Optional) Create an entry in your hosts file to make the uploader accessible directly via it's own URL. This file is /etc/hosts on my Mac 
+and is c:/Windows/System32/drivers/etc/hosts on Windows platform. Just add the line:
+10.1.2.200	phpyoutube.com
+
+You should now be able to see the uploader page by going to the URL phpyoutube.com in your web browser.
+
+3) (Optional)Install the Google Chrome extension 'LocalLinks':
+https://chrome.google.com/webstore/detail/jllpkdkcdjndhggodimiphkghogcpida
+
+This will allow you to view the video files through your web browser (if you're using Chrome).
+
+
+How to use uploader
+===================
+
+1) Copy the video files you want to upload into the 'Uploader' directory.
+
+2) Go the web page for the uploader e.g. http://10.1.2.200/phpyoutube/ or phpyoutube.com
+
+3) You will then see a list of the video files in the directory.
+
+4) Click on 'Create info' to set the info for that video. Click 'Save info' to save the info, or cancel to return to the previous
+screen without saving. If you have the 'LocalLinks' extension installed you will be able to play the video without downloading it again.
+
+5) Wait. The video files that have info files created will automatically be uploaded to Youtub at 1.30am (or whatever time you set in the
+crontab file).
+
+or
+
+6) (Optional) Click 'Force upload' to force the file to be uploaded straight away through the browser. This isn't recommended for large files
+but is useful for testing that everything is working and small files.
+
+or 
+
+7) (Optional) Run the command 'php uploader.php' in a command line window to run the upload
+
+
+
+
